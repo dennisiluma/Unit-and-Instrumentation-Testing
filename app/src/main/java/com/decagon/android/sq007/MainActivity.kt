@@ -5,14 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import com.decagon.android.sq007.databinding.ActivityMainBinding
-import java.util.regex.Matcher
-import java.util.regex.Pattern
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +18,13 @@ class MainActivity : AppCompatActivity() {
         var binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Spinner view and adaptor controller starts here
         val spinnerView = findViewById<Spinner>(R.id.spv_gender_field)
-        val customList = listOf<String>("Male", "Female", "Others")
-        val adapter = ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, customList)
+        val customList = listOf<String>("Male", "Female")
+        val adapter =
+            ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, customList)
         spinnerView.adapter = adapter
+        //Spinner view and adaptor controller ends here
 
 
         //section that handles phone validation before submission starts here
@@ -39,19 +40,38 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (RegistrationUtility.phoneNumberValidator(binding.etvPhoneNumberField.text.toString())) {
                     binding.btvSubmit.isEnabled = true
-                }
-                else {
+                } else {
 //                    binding.btvSubmit.isEnabled = false
                     binding.etvPhoneNumberField.error = "Invalid Mobile"
                 }
             }
         })
-
         //section that handles phone validatiom before sumbmission ends here
 
-        //
 
-//        val btv_submit = findViewById<Button>(R.id.btv_submit)
+        //section that handles email validation before submission starts here
+        binding.etvEmailField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                //null
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //null
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (RegistrationUtility.emailvalidator(binding.etvEmailField.text.toString())) {
+                    binding.btvSubmit.isEnabled = false
+                } else {
+                    binding.btvSubmit.isEnabled = false
+                    binding.etvEmailField.error = "Invalid Email"
+                }
+            }
+        })
+        //section that handles email validatiom before sumbmission ends here
+
+
+        // val btv_submition
         binding.btvSubmit.setOnClickListener {
             val name = findViewById<EditText>(R.id.etv_name_field).text.toString()
             val email = findViewById<EditText>(R.id.etv_email_field).text.toString()
@@ -70,20 +90,10 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra(ProfileActivity.SEX, gender)
                 startActivity(intent)
                 Toast.makeText(this, "Welcome $name", Toast.LENGTH_LONG).show()
-            }
-            else{
-                Toast.makeText(this, "Check and properly fill your fields", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Check and properly fill your fields", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
-
     }
-
-
 }
-// image validation yet to be implemented
-//    private fun emailValidator(text: String): Boolean {
-//        // regular expresion code to validate email phone number
-//        var pattern:Pattern = Pattern.compile("^[A-Za-z](.*)([@]{1})(.{1,})(\\\\.)(.{1,})")
-//        var matcher:Matcher = pattern.matcher(text)
-//        return matcher.matches()
-//    }
